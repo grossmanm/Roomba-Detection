@@ -63,6 +63,7 @@ def cnn_model_fn(features, labels, mode):
 def main(unused_argv):
     mnist=tf.contrib.learn.datasets.load_dataset("mnist")
     train_data = mnist.train.images
+    print(train_data)
     train_labels = np.asarray(mnist.train.labels, dtype=np.int32)
     eval_data = mnist.test.images
     eval_labels = np.asarray(mnist.test.labels, dtype=np.int32)
