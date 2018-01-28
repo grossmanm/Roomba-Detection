@@ -19,7 +19,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import os
+from os.path import isfile, join
 
 from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
@@ -31,8 +31,8 @@ IMAGE_SIZE = 24
 
 # Global constants describing the CIFAR-10 data set.
 NUM_CLASSES = 1
-NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 1897
-NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 1897
+NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 1000
+NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 1000
 
 
 def read_roomba(filename_queue):
@@ -148,13 +148,14 @@ def distorted_inputs(data_dir, batch_size):
     images: Images. 4D tensor of [batch_size, IMAGE_SIZE, IMAGE_SIZE, 3] size.
     labels: Labels. 1D tensor of [batch_size] size.
   """
-  filenames = [os.path.join(data_dir, 'roomba.bin')]
+  filenames = [join(data_dir, '\sqwy6yroomba%d.bin' % i)
+               for i in xrange(1, 2)]
   for f in filenames:
-    if not tf.gfile.Exists(f):
-      raise ValueError('Failed to find file: ' + f)
-
+      if not tf.gfile.Exists(f):
+          raise ValueError('Failed to find file: ' + f)
   # Create a queue that produces the filenames to read.
-  filename_queue = tf.train.string_input_producer(filenames)
+
+  filename_queue = tf.train(filenames)
 
   # Read examples from files in the filename queue.
   read_input = read_roomba(filename_queue)
@@ -211,8 +212,13 @@ def inputs(eval_data, data_dir, batch_size):
     images: Images. 4D tensor of [batch_size, IMAGE_SIZE, IMAGE_SIZE, 3] size.
     labels: Labels. 1D tensor of [batch_size] size.
   """
-  filenames = [os.path.join(data_dir, 'roomba.bin')]
-  num_examples_per_epoch = NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN
+  if not eval_data:
+      filenames = [join(data_dir, 'roomba%d.bin' % i)
+                   for i in xrange(1, 2)]
+      num_examples_per_epoch = NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN
+  else:
+      filenames = [join(data_dir, 'roomba_test.bin')]
+      num_examples_per_epoch = NUM_EXAMPLES_PER_EPOCH_FOR_EVAL
   for f in filenames:
     if not tf.gfile.Exists(f):
       raise ValueError('Failed to find file: ' + f)
