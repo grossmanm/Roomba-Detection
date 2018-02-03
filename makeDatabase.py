@@ -15,7 +15,6 @@ def makeDatabase(path):
     as the CIFAR-10 dataset.
     :param path: a path to a folder containing images
     """
-    distortedImages = []
     out = []
     onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
     for n in range(0, len(onlyfiles)):

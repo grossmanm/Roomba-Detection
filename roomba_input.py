@@ -148,14 +148,13 @@ def distorted_inputs(data_dir, batch_size):
     images: Images. 4D tensor of [batch_size, IMAGE_SIZE, IMAGE_SIZE, 3] size.
     labels: Labels. 1D tensor of [batch_size] size.
   """
-  filenames = [join(data_dir, '\sqwy6yroomba%d.bin' % i)
-               for i in xrange(1, 2)]
+  filenames = [join(data_dir, 'roomba%d.bin' % i)
+               for i in xrange(0, 2)]
   for f in filenames:
       if not tf.gfile.Exists(f):
           raise ValueError('Failed to find file: ' + f)
   # Create a queue that produces the filenames to read.
-
-  filename_queue = tf.train(filenames)
+  filename_queue = tf.train.string_input_producer(filenames)
 
   # Read examples from files in the filename queue.
   read_input = read_roomba(filename_queue)
